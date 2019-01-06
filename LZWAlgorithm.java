@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,6 +31,10 @@ public class LZWAlgorithm {
 		}
 		
 		return key;
+	}
+	
+	public static double getCompressionRate(int input, int output) {
+		return input*1.0/output;
 	}
 	
 	public static void main(String[] args) {
@@ -122,6 +127,12 @@ public class LZWAlgorithm {
 		for(int i : output) {
 			System.out.print(i + " ");
 		}
+		
+		double compressionRate = getCompressionRate(inputString.length(), output.size());
+		DecimalFormat numberFormat = new DecimalFormat("#.000");
+		String compressionRateString = "\nCompression rate: " + numberFormat.format(compressionRate);
+		System.out.println(compressionRateString);
+		
 	}
 
 }
