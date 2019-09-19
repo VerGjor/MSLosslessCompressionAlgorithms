@@ -7,7 +7,8 @@ import java.util.Scanner;
 
 public class LZWAlgorithm {
 
-    public static List<Character> insertDistinctCharactersFrom(String inputString){
+    // funkcijata prima proizvolen string i vrakja lista so unikatnite bukvi od stringot
+    private static List<Character> insertDistinctCharactersFrom(String inputString){
 
         List<Character> list = new ArrayList<>();
         for(int i = 0; i<inputString.length(); i++) {
@@ -19,7 +20,8 @@ public class LZWAlgorithm {
         return list;
     }
 
-    public static int getKeyFrom(String character, Map<Integer, String> dictionary) {
+    // go vrakja klucot (indeksot) na vlezniot string
+    private static int getKeyFrom(String character, Map<Integer, String> dictionary) {
 
         int key = 0;
 
@@ -33,7 +35,8 @@ public class LZWAlgorithm {
         return key;
     }
 
-    public static double getCompressionRate(int input, int output) {
+    // go presmetuva stepenot na kompresija na algoritamot
+    private static double getCompressionRate(int input, int output) {
         return input*1.0/output;
     }
 
@@ -48,15 +51,20 @@ public class LZWAlgorithm {
 
         System.out.println("Enter the initial dictionary:");
 
+        // prebrojuva kolku unikatni bukvi imame vo vneseniot string
         long countEntries = inputString.chars().distinct().count();
-        List<Character> distinctCharacters = new ArrayList<>();
 
-        distinctCharacters = insertDistinctCharactersFrom(inputString);
+        // kreirame nova lisa koja gi sodrzi samo unikatnite bukvi od string-ot sto go vnesovme
+        List<Character> distinctCharacters = insertDistinctCharactersFrom(inputString);
 
         long counter = 0;
         Map<Integer, String> dictionary = new LinkedHashMap<>();
 
         int indexOfEntry = 1;
+
+        // so ovoj ciklus ja kreirame tabelata so karakteri sto treba da se izminat vo stringot za da se
+        // kreira inicijalniot recnik, a toa go praveme so racno vnesuvanje na unikatnite karakteri
+        // eden po eden preku vlez
         while(counter != countEntries) {
             System.out.print("\nindex: " + indexOfEntry);
             System.out.print("\nentry: ");
@@ -80,13 +88,19 @@ public class LZWAlgorithm {
         StringBuilder tempString = new StringBuilder();
 
 
+        // glavniot ciklus preku koj se odviva LZW enkodiranjeto
         for(int i=1;i<inputString.length();i++) {
 
+            // najprvo gi dodavame momentalnata i slednata bukva od vlezniot string vo
+            // privremen string i go pecateme
             tempString.append(current);
-            if(next != null)
-                tempString.append(next);
+            tempString.append(next);
             System.out.println(tempString.toString());
 
+            // proveruvame dali nasiot recnik go sodrzi ovoj privremen string
+            // dokolku ne go sodrzi, go dodavame vo recnikot i go prebrisuvame stringot
+            // ako go sodrzi ovoj string, togas current za vrednost kje go sodrzi nasiot momentalen privremen string
+            // a next kje bide sledbenikot na next
             if(!dictionary.containsValue(tempString.toString())) {
                 int sizeOfDictionary = dictionary.keySet().size();
                 dictionary.put(sizeOfDictionary + 1, tempString.toString());
@@ -106,10 +120,10 @@ public class LZWAlgorithm {
                 tempString.setLength(0);
 
             }
-
-
         }
 
+        // ja pravi istata proverka kako vo ciklusot za pretposlednata i poslednata bukva od ciklusot za da nemame
+        // NullPointerException
         if(!dictionary.containsValue(current)) {
             int sizeOfDictionary = dictionary.keySet().size();
             dictionary.put(sizeOfDictionary + 1, tempString.toString());
@@ -119,11 +133,14 @@ public class LZWAlgorithm {
             output.add(getKeyFrom(current, dictionary));
         }
 
+
+        // go pecateme ostanatiot del od recnikot (sto go dodadovme so prethodniot ciklus)
         System.out.print("Dictionary: \n");
         for(int i : dictionary.keySet()) {
             System.out.println(i + " " + dictionary.get(i));
         }
 
+        // izlezot od algoritamot e (indeksite na stringovite sto bile povikani za vreme na izminuvanjeto na ciklusot)
         System.out.print("\nOutput: ");
         for(int i : output) {
             System.out.print(i + " ");
